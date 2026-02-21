@@ -1,4 +1,3 @@
-// src/pages/GamePage.jsx
 import useGameStore from '../store/useGameStore';
 import DrawingCanvas from '../components/Canvas/DrawingCanvas';
 import ViewCanvas from '../components/Canvas/ViewCanvas';
@@ -16,7 +15,6 @@ export default function GamePage() {
   const isDrawer = useGameStore((s) => s.isDrawer());
   const roundEndData = useGameStore((s) => s.roundEndData);
 
-  console.log("Is drawer:", isDrawer);
   if (status === 'gameOver') {
     return (
       <div className={styles.page}>
@@ -38,15 +36,14 @@ export default function GamePage() {
 
       {/* Main area */}
       <div className={styles.main}>
-        {/* Canvas */}
+
+        {/* Canvas Section */}
         <div className={styles.canvasArea}>
-          <div className={styles.canvasWrapper}>
           {isDrawer
-  ? <DrawingCanvas key="drawer" />
-  : <ViewCanvas key="viewer" />
-}
+            ? <DrawingCanvas key="drawer" />
+            : <ViewCanvas key="viewer" />
+          }
         </div>
-      </div>
 
         {/* Right panel */}
         <div className={styles.sidePanel}>
@@ -55,6 +52,7 @@ export default function GamePage() {
             <ChatBox />
           </div>
         </div>
+
       </div>
 
       {/* Round end overlay */}
@@ -63,15 +61,21 @@ export default function GamePage() {
           <div className={styles.roundEndCard}>
             <h3 className={styles.roundEndTitle}>Round Over!</h3>
             <p className={styles.wordReveal}>
-              The word was <strong className="neon-text-cyan">{roundEndData.word}</strong>
+              The word was{' '}
+              <strong className="neon-text-cyan">
+                {roundEndData.word}
+              </strong>
             </p>
+
             <div className={styles.scoreList}>
               {roundEndData.scores
                 .sort((a, b) => b.totalScore - a.totalScore)
                 .map((s) => (
                   <div key={s.socketId} className={styles.scoreRow}>
                     <span>{s.name}</span>
-                    <span className="neon-text-green">{s.totalScore} pts</span>
+                    <span className="neon-text-green">
+                      {s.totalScore} pts
+                    </span>
                   </div>
                 ))}
             </div>
@@ -81,4 +85,3 @@ export default function GamePage() {
     </div>
   );
 }
-
