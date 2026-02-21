@@ -1,0 +1,89 @@
+/* src/components/HUD/HUD.module.css */
+.timerWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wordWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.wordLabel {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.wordActual {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--neon-green);
+  text-shadow: 0 0 12px rgba(0,255,159,0.5);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hintChars {
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.blank {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  line-height: 1;
+  min-width: 14px;
+  text-align: center;
+  border-bottom: 2px solid var(--border-bright);
+}
+
+.revealed {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px rgba(0,245,255,0.5);
+  line-height: 1;
+  min-width: 14px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.roundBadge {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.3rem 0.75rem;
+}
+
+.roundNum {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px rgba(255,0,200,0.4);
+}
+
+.roundSep {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin: 0 0.1rem;
+}
+
+.roundTotal {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}

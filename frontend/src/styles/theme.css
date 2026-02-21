@@ -1,0 +1,30 @@
+/* src/styles/theme.css */
+:root {
+  --neon-cyan: #00f5ff;
+  --neon-pink: #ff00c8;
+  --neon-green: #00ff9f;
+  --neon-yellow: #ffe600;
+  --neon-purple: #bf00ff;
+
+  --bg: #0a0a1a;
+  --bg-2: #0f0f28;
+  --surface: #111130;
+  --surface-2: #1a1a40;
+  --surface-3: #22224e;
+  --border: #2a2a60;
+  --border-bright: #4a4aaa;
+
+  --text: #e0e0ff;
+  --text-dim: #7070a0;
+  --text-muted: #404070;
+
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-cyan: 0 0 20px rgba(0, 245, 255, 0.3);
+  --shadow-pink: 0 0 20px rgba(255, 0, 200, 0.3);
+  --shadow-green: 0 0 20px rgba(0, 255, 159, 0.3);
+
+  --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Cascadia Code', 'Fira Code', monospace;
+}

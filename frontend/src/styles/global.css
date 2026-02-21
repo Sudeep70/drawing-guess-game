@@ -1,0 +1,79 @@
+/* src/styles/global.css */
+@import './theme.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  touch-action: none; /* prevent scroll hijack on canvas */
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font);
+  border: none;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+input, textarea {
+  font-family: var(--font);
+  outline: none;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+/* Neon glow utilities */
+.glow-cyan { box-shadow: var(--shadow-cyan); border-color: var(--neon-cyan) !important; }
+.glow-pink  { box-shadow: var(--shadow-pink); border-color: var(--neon-pink) !important; }
+.glow-green { box-shadow: var(--shadow-green); border-color: var(--neon-green) !important; }
+
+.neon-text-cyan  { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,245,255,0.6); }
+.neon-text-pink  { color: var(--neon-pink); text-shadow: 0 0 10px rgba(255,0,200,0.6); }
+.neon-text-green { color: var(--neon-green); text-shadow: 0 0 10px rgba(0,255,159,0.6); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  color: #000;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.btn-primary:hover { transform: translateY(-2px); filter: brightness(1.15); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 0.6rem 1.5rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+.btn-ghost:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}

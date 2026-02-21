@@ -1,0 +1,102 @@
+/* src/components/Leaderboard/Leaderboard.module.css */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.header {
+  padding: 0.6rem 1rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.row:last-child { border-bottom: none; }
+.row.me { background: rgba(0, 245, 255, 0.06); }
+
+.rank { font-size: 0.72rem; color: var(--text-muted); width: 24px; flex-shrink: 0; }
+.name { flex: 1; font-size: 0.85rem; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 0.3rem; }
+.badge { font-size: 0.75rem; }
+.score { font-size: 0.85rem; font-weight: 700; color: var(--neon-green); font-family: var(--font-mono); }
+
+/* End Screen */
+.endScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.endTitle {
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.podium {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.podiumSlot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+}
+
+.place1 { border-color: var(--neon-yellow); order: 2; padding-bottom: 1.5rem; }
+.place2 { order: 1; }
+.place3 { order: 3; }
+
+.medal { font-size: 1.75rem; }
+.podiumName { font-weight: 700; font-size: 0.9rem; color: var(--text); }
+.podiumScore { font-size: 0.8rem; color: var(--neon-green); font-family: var(--font-mono); }
+
+.fullBoard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.endRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.endRank { color: var(--text-muted); font-size: 0.8rem; width: 28px; }
+.endName { flex: 1; font-weight: 600; }
+.endScore { color: var(--neon-green); font-family: var(--font-mono); font-weight: 700; }

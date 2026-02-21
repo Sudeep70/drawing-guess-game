@@ -1,0 +1,89 @@
+/* src/components/Canvas/Canvas.module.css */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  background: #ffffff;
+  border-radius: var(--radius);
+  border: 2px solid var(--border-bright);
+  touch-action: none;
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  flex-wrap: wrap;
+}
+
+.colorPalette {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.colorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  transition: transform 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+}
+.colorSwatch:hover { transform: scale(1.2); }
+.activeColor { border-color: var(--neon-cyan) !important; transform: scale(1.25); box-shadow: var(--shadow-cyan); }
+
+.sizeControl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+.toolLabel { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.slider {
+  width: 80px;
+  accent-color: var(--neon-cyan);
+}
+
+.sizePreview {
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  min-width: 4px;
+  min-height: 4px;
+  max-width: 40px;
+  max-height: 40px;
+  transition: all 0.1s;
+}
+
+.clearBtn {
+  background: transparent;
+  border: 1px solid #ff4444;
+  color: #ff6666;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.clearBtn:hover { background: #ff444422; }
+
+.viewingLabel {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  padding: 0.25rem;
+}
