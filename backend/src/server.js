@@ -1,4 +1,3 @@
-// src/server.js
 require('dotenv').config();
 
 const express = require('express');
@@ -12,38 +11,66 @@ const registerGameHandlers = require('./handlers/gameHandlers');
 const registerDrawHandlers = require('./handlers/drawHandlers');
 const registerChatHandlers = require('./handlers/chatHandlers');
 
+// ─────────────────────────────────────────
+// ENV CONFIG
+// ─────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
-// ─── Express App ──────────────────────────────────────────────────────────────
+// Allow multiple origins (comma separated in env)
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : ['http://localhost:5173'];
+
+// ─────────────────────────────────────────
+// EXPRESS APP
+// ─────────────────────────────────────────
 const app = express();
-app.use(cors({ origin: CORS_ORIGIN }));
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 
-app.get('/health', (_, res) => res.json({ status: 'ok', uptime: process.uptime() }));
+app.get('/health', (_, res) =>
+  res.json({ status: 'ok', uptime: process.uptime() })
+);
 
-// ─── HTTP + Socket.io Server ──────────────────────────────────────────────────
+// ─────────────────────────────────────────
+// HTTP + SOCKET.IO
+// ─────────────────────────────────────────
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: CORS_ORIGIN,
+    origin: allowedOrigins.includes('*') ? true : allowedOrigins,
     methods: ['GET', 'POST'],
+    credentials: true,
   },
   transports: ['websocket', 'polling'],
   pingTimeout: 20000,
   pingInterval: 10000,
 });
 
-// ─── Socket.io Connection ─────────────────────────────────────────────────────
+// ─────────────────────────────────────────
+// SOCKET CONNECTION
+// ─────────────────────────────────────────
 io.on('connection', (socket) => {
   logger.info(`Socket connected: ${socket.id}`);
 
-  // Initialize socket metadata
   socket.data.roomCode = null;
   socket.data.playerName = null;
 
-  // Register all event handlers
   registerRoomHandlers(io, socket);
   registerGameHandlers(io, socket);
   registerDrawHandlers(io, socket);
@@ -54,8 +81,10 @@ io.on('connection', (socket) => {
   });
 });
 
-// ─── Start ────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────
+// START SERVER
+// ─────────────────────────────────────────
 server.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
-  logger.info(`CORS origin: ${CORS_ORIGIN}`);
+  logger.info(`🚀 Server running on port ${PORT}`);
+  logger.info(`🌍 Allowed origins: ${allowedOrigins.join(', ')}`);
 });
