@@ -21,13 +21,10 @@ export default function ViewCanvas() {
 
   return (
     <div className={styles.wrapper}>
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={500}
-        className={styles.canvas}
-        style={{ cursor: 'default', pointerEvents: 'none' }}
-      />
+     <canvas
+  ref={canvasRef}
+  className={styles.canvas}
+/>
       <div className={styles.viewingLabel}>👁 Watching...</div>
     </div>
   );

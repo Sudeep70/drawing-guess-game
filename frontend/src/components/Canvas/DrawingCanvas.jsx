@@ -20,13 +20,10 @@ export default function DrawingCanvas() {
 
   return (
     <div className={styles.wrapper}>
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={500}
-        className={styles.canvas}
-        style={{ cursor: 'crosshair' }}
-      />
+     <canvas
+  ref={canvasRef}
+  className={styles.canvas}
+/>
       <div className={styles.toolbar}>
         <div className={styles.colorPalette}>
           {COLORS.map((c) => (

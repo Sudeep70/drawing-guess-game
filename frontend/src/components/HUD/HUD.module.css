@@ -87,3 +87,22 @@
   font-size: 0.9rem;
   color: var(--text-dim);
 }
+.guessHeader {
+  text-align: center;
+  font-size: 13px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+}
+
+.hintRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.letterCount {
+  font-size: 14px;
+  opacity: 0.6;
+}

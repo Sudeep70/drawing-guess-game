@@ -31,8 +31,20 @@
 .canvasArea {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
+  min-height: 0;
+}
+
+.canvasWrapper {
+  width: 100%;
+  max-width: 1100px;
+  aspect-ratio: 16 / 9;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
 }
 
 .sidePanel {
@@ -124,4 +136,15 @@
   .chatWrap { flex: 2; }
   .sidePanel > :first-child { flex: 1; }
   .hud { flex-wrap: wrap; gap: 0.5rem; padding: 0.4rem 0.6rem; }
+}
+
+@media (max-width: 768px) {
+  .canvasArea {
+    padding: 0.5rem 0;
+  }
+
+  .sidePanel {
+    width: 100%;
+    height: 250px;
+  }
 }

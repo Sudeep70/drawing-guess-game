@@ -16,6 +16,7 @@ export default function GamePage() {
   const isDrawer = useGameStore((s) => s.isDrawer());
   const roundEndData = useGameStore((s) => s.roundEndData);
 
+  console.log("Is drawer:", isDrawer);
   if (status === 'gameOver') {
     return (
       <div className={styles.page}>
@@ -39,8 +40,13 @@ export default function GamePage() {
       <div className={styles.main}>
         {/* Canvas */}
         <div className={styles.canvasArea}>
-          {isDrawer ? <DrawingCanvas /> : <ViewCanvas />}
+          <div className={styles.canvasWrapper}>
+          {isDrawer
+  ? <DrawingCanvas key="drawer" />
+  : <ViewCanvas key="viewer" />
+}
         </div>
+      </div>
 
         {/* Right panel */}
         <div className={styles.sidePanel}>
@@ -75,3 +81,4 @@ export default function GamePage() {
     </div>
   );
 }
+
