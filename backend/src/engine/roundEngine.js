@@ -9,6 +9,7 @@ const {
   resetRoundState,
   playerSnapshot,
 } = require('../state/rooms');
+
 const { getRandomWords, buildHintMask, shuffle } = require('./wordBank');
 const { calcGuesserScore, calcDrawerBonus, buildLeaderboard } = require('./scoringEngine');
 const { startRoundTimer, clearRoundTimer } = require('./timerEngine');
@@ -29,18 +30,18 @@ function startGame(roomCode, io) {
   room.round.current = 0;
   room.roundHistory = [];
 
-  // Reset all scores
   Object.values(room.players).forEach((p) => {
     p.score = 0;
     p.hasGuessedCorrectly = false;
     p.guessOrder = null;
   });
 
-  // Pre-shuffle drawer order from connected players
   const connected = getConnectedPlayers(roomCode).map((p) => p.socketId);
   room.round.drawerOrder = shuffle(connected);
 
-  io.to(roomCode).emit('game:starting', { countdown: GAME_START_COUNTDOWN_MS / 1000 });
+  io.to(roomCode).emit('game:starting', {
+    countdown: GAME_START_COUNTDOWN_MS / 1000
+  });
 
   setTimeout(() => {
     advanceRound(roomCode, io);
@@ -66,7 +67,7 @@ function advanceRound(roomCode, io) {
   let drawerSocketId = null;
   const order = room.round.drawerOrder;
   const idx = (room.round.current - 1) % order.length;
-  // Walk forward until we find a connected player
+
   for (let i = 0; i < order.length; i++) {
     const candidate = order[(idx + i) % order.length];
     const p = room.players[candidate];
@@ -77,7 +78,6 @@ function advanceRound(roomCode, io) {
   }
 
   if (!drawerSocketId) {
-    // No connected players — abort
     endGame(roomCode, io);
     return;
   }
@@ -86,27 +86,29 @@ function advanceRound(roomCode, io) {
   room.status = 'drawing';
 
   const drawerName = room.players[drawerSocketId]?.name || 'Unknown';
-  const hintMask = '';
 
   io.to(roomCode).emit('round:new', {
     round: room.round.current,
     total: TOTAL_ROUNDS,
     drawerSocketId,
     drawerName,
-    hintMask,
+    hintMask: '',
   });
 
-  // Send word choices to drawer only
-  const words = getRandomWords(3);
+  // ✅ FIXED: difficulty-aware word selection
+  const words = getRandomWords(room.difficulty || 'medium', 3);
   room.round.wordChoices = words;
+
   io.to(drawerSocketId).emit('round:wordChoices', { words });
 
-  logger.info(`[${roomCode}] Round ${room.round.current} — Drawer: ${drawerName}`);
+  logger.info(
+    `[${roomCode}] Round ${room.round.current} — Drawer: ${drawerName} (Difficulty: ${room.difficulty})`
+  );
 
   // Auto-pick if drawer doesn't choose in time
   room.round._wordPickTimeout = setTimeout(() => {
     const r = getRoom(roomCode);
-    if (!r || r.round.word) return; // already chosen
+    if (!r || r.round.word) return;
     lockWord(roomCode, r.round.wordChoices[0] || 'mystery', io);
   }, WORD_PICK_TIMEOUT_MS);
 }
@@ -115,7 +117,7 @@ function advanceRound(roomCode, io) {
 
 function lockWord(roomCode, word, io) {
   const room = getRoom(roomCode);
-  if (!room || room.round.word) return; // already locked
+  if (!room || room.round.word) return;
 
   if (room.round._wordPickTimeout) {
     clearTimeout(room.round._wordPickTimeout);
@@ -126,13 +128,12 @@ function lockWord(roomCode, word, io) {
   room.round.wordHint = buildHintMask(word);
 
   const timeLeft = 60;
+
   io.to(roomCode).emit('round:wordLocked', {
     hintMask: room.round.wordHint,
     timeLeft,
   });
 
-  // Tell the drawer the actual word via the existing round:wordLocked
-  // We'll send extra info just to drawer
   io.to(room.round.drawerSocketId).emit('round:wordRevealToDrawer', { word });
 
   startRoundTimer(roomCode, io, endRound);
@@ -149,13 +150,12 @@ function endRound(roomCode, io) {
 
   const { word, drawerSocketId, correctGuessCount } = room.round;
 
-  // Award drawer bonus
   const drawerBonus = calcDrawerBonus(correctGuessCount);
+
   if (room.players[drawerSocketId]) {
     room.players[drawerSocketId].score += drawerBonus;
   }
 
-  // Build score deltas for results screen
   const scores = Object.values(room.players).map((p) => ({
     socketId: p.socketId,
     name: p.name,
@@ -178,7 +178,9 @@ function endRound(roomCode, io) {
     leaderboard,
   });
 
-  logger.info(`[${roomCode}] Round ${room.round.current} ended. Word: "${word}"`);
+  logger.info(
+    `[${roomCode}] Round ${room.round.current} ended. Word: "${word}"`
+  );
 
   setTimeout(() => {
     advanceRound(roomCode, io);
@@ -199,9 +201,10 @@ function endGame(roomCode, io) {
     roundHistory: room.roundHistory,
   });
 
-  logger.info(`[${roomCode}] Game over. Winner: ${finalLeaderboard[0]?.name}`);
+  logger.info(
+    `[${roomCode}] Game over. Winner: ${finalLeaderboard[0]?.name}`
+  );
 
-  // Clean up room after 10 minutes
   setTimeout(() => {
     const { deleteRoom } = require('../state/rooms');
     deleteRoom(roomCode);
@@ -214,9 +217,16 @@ function endGame(roomCode, io) {
 function checkAllGuessed(roomCode, io) {
   const room = getRoom(roomCode);
   if (!room) return;
+
   const connected = getConnectedPlayers(roomCode);
-  const nonDrawers = connected.filter((p) => p.socketId !== room.round.drawerSocketId);
-  const allGuessed = nonDrawers.length > 0 && nonDrawers.every((p) => p.hasGuessedCorrectly);
+  const nonDrawers = connected.filter(
+    (p) => p.socketId !== room.round.drawerSocketId
+  );
+
+  const allGuessed =
+    nonDrawers.length > 0 &&
+    nonDrawers.every((p) => p.hasGuessedCorrectly);
+
   if (allGuessed) {
     clearRoundTimer(roomCode);
     endRound(roomCode, io);

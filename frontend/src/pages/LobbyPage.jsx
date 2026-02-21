@@ -7,6 +7,7 @@ import styles from './LobbyPage.module.css';
 export default function LobbyPage() {
   const [name, setName] = useState('');
   const [roomCode, setRoomCode] = useState('');
+  const [difficulty, setDifficulty] = useState('medium'); // ⭐ NEW
   const [tab, setTab] = useState('create'); // 'create' | 'join'
   const error = useGameStore((s) => s.error);
   const clearError = useGameStore((s) => s.clearError);
@@ -15,7 +16,10 @@ export default function LobbyPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const room = params.get('room');
-    if (room) { setRoomCode(room.toUpperCase()); setTab('join'); }
+    if (room) { 
+      setRoomCode(room.toUpperCase()); 
+      setTab('join'); 
+    }
   }, []);
 
   const connect = (callback) => {
@@ -30,12 +34,22 @@ export default function LobbyPage() {
   };
 
   const createRoom = () => {
-    connect(() => socket.emit('room:create', { playerName: name.trim() }));
+    connect(() =>
+      socket.emit('room:create', {
+        playerName: name.trim(),
+        difficulty // ⭐ SEND DIFFICULTY
+      })
+    );
   };
 
   const joinRoom = () => {
     if (!roomCode.trim()) return;
-    connect(() => socket.emit('room:join', { roomCode: roomCode.toUpperCase().trim(), playerName: name.trim() }));
+    connect(() =>
+      socket.emit('room:join', {
+        roomCode: roomCode.toUpperCase().trim(),
+        playerName: name.trim()
+      })
+    );
   };
 
   return (
@@ -59,13 +73,36 @@ export default function LobbyPage() {
           />
 
           <div className={styles.tabs}>
-            <button className={`${styles.tab} ${tab === 'create' ? styles.activeTab : ''}`} onClick={() => setTab('create')}>
+            <button
+              className={`${styles.tab} ${tab === 'create' ? styles.activeTab : ''}`}
+              onClick={() => setTab('create')}
+            >
               Create Room
             </button>
-            <button className={`${styles.tab} ${tab === 'join' ? styles.activeTab : ''}`} onClick={() => setTab('join')}>
+            <button
+              className={`${styles.tab} ${tab === 'join' ? styles.activeTab : ''}`}
+              onClick={() => setTab('join')}
+            >
               Join Room
             </button>
           </div>
+
+          {tab === 'create' && (
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px' }}>
+                Select Difficulty:
+              </label>
+              <select
+                className={styles.input}
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+              >
+                <option value="easy">🟢 Easy</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="hard">🔴 Hard</option>
+              </select>
+            </div>
+          )}
 
           {tab === 'join' && (
             <input
@@ -90,7 +127,9 @@ export default function LobbyPage() {
           </button>
         </div>
 
-        <p className={styles.hint}>Invite-only · Up to 6 players · 10 rounds</p>
+        <p className={styles.hint}>
+          Invite-only · Up to 6 players · 10 rounds
+        </p>
       </div>
     </div>
   );

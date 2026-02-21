@@ -1,43 +1,81 @@
 // src/engine/wordBank.js
 
-const WORDS = [
-  // Animals
-  'elephant', 'penguin', 'giraffe', 'dolphin', 'kangaroo', 'octopus', 'parrot',
-  'flamingo', 'cheetah', 'hamster', 'lobster', 'peacock', 'jellyfish', 'hedgehog',
-  // Food & Drink
-  'pizza', 'sushi', 'burrito', 'waffle', 'pretzel', 'avocado', 'pineapple',
-  'cupcake', 'popcorn', 'broccoli', 'croissant', 'smoothie', 'dumpling', 'nachos',
-  // Objects
-  'umbrella', 'telescope', 'backpack', 'lantern', 'compass', 'hammock', 'suitcase',
-  'megaphone', 'hourglass', 'periscope', 'typewriter', 'calculator', 'flashlight',
-  // Places
-  'lighthouse', 'volcano', 'pyramid', 'igloo', 'treehouse', 'submarine', 'gondola',
-  'skyscraper', 'waterfall', 'colosseum', 'windmill', 'canyon', 'glacier',
-  // Actions
-  'juggling', 'surfing', 'painting', 'skydiving', 'snorkeling', 'archery', 'karate',
-  'dancing', 'gardening', 'climbing', 'bowling', 'knitting', 'fishing',
-  // Pop culture
-  'rainbow', 'thunderstorm', 'fireworks', 'eclipse', 'tornado', 'blizzard',
-  'avalanche', 'hurricane', 'meteor', 'aurora', 'tsunami',
-  // Tech & Modern
-  'robot', 'rocket', 'satellite', 'drone', 'hologram', 'spaceship', 'cyborg',
-  'smartphone', 'headphones', 'keyboard', 'microchip',
-  // Fantasy
-  'dragon', 'unicorn', 'mermaid', 'wizard', 'phoenix', 'goblin', 'centaur',
-  'kraken', 'werewolf', 'vampire', 'golem', 'griffin',
+// ================= EASY =================
+const EASY_WORDS = [
+  "cat","dog","car","bus","sun","moon","star","fish","tree","ball",
+  "cake","hat","cup","book","shoe","bed","chair","phone","apple","milk",
+  "duck","frog","lion","tiger","bear","cloud","rain","snow","leaf","boat",
+  "train","cake","gift","drum","bell","flag","ring","kite","sock","lamp",
+  "bread","cheese","egg","banana","grape","pizza","rice","soup","fork","spoon",
+  "shirt","pants","clock","key","lock","box","coin","pen","pencil","paper"
 ];
 
-const usedWords = new Set();
+// ================= MEDIUM =================
+const MEDIUM_WORDS = [
+  "elephant","giraffe","dolphin","kangaroo","penguin","octopus","parrot","flamingo",
+  "cheetah","lobster","peacock","jellyfish","hedgehog","squirrel","raccoon",
+  "pizza","sushi","burrito","waffle","pretzel","avocado","pineapple","cupcake",
+  "popcorn","broccoli","croissant","smoothie","dumpling","nachos",
+  "umbrella","telescope","backpack","lantern","compass","hammock","suitcase",
+  "megaphone","hourglass","periscope","typewriter","calculator","flashlight",
+  "lighthouse","volcano","pyramid","igloo","treehouse","submarine","gondola",
+  "skyscraper","waterfall","windmill","canyon","glacier","island","desert",
+  "juggling","surfing","painting","skydiving","snorkeling","archery","karate",
+  "dancing","gardening","climbing","bowling","knitting","fishing",
+  "rainbow","thunderstorm","fireworks","eclipse","tornado","blizzard","meteor"
+];
 
-function getRandomWords(count = 3) {
-  const available = WORDS.filter((w) => !usedWords.has(w));
-  // Reset if we've used most of the bank
-  if (available.length < count) {
-    usedWords.clear();
-    return shuffle([...WORDS]).slice(0, count);
+// ================= HARD =================
+const HARD_WORDS = [
+  "microscope","constellation","archaeology","metamorphosis","philosophy",
+  "astronaut","laboratory","algorithm","telescope","galaxy","supernova",
+  "quantum","nebula","thermodynamics","photosynthesis","evolution",
+  "hologram","cyborg","spaceship","satellite","artificial","intelligence",
+  "biotechnology","nanotechnology","cryptography","blockchain",
+  "catastrophe","infrastructure","architecture","engineering","mechanism",
+  "circumference","hypothesis","equilibrium","transformation",
+  "renaissance","civilization","industrialization","urbanization",
+  "astronomy","geography","mathematics","chemistry","philosopher",
+  "volcanology","meteorology","archipelago","hemisphere","ecosystem",
+  "constitutional","representative","bureaucracy","legislation",
+  "imagination","perception","consciousness","revolutionary",
+  "telecommunication","microprocessor","synchronization",
+  "hyperventilation","hallucination","determination",
+  "unbelievable","miscommunication","counterintuitive"
+];
+
+// Track used words per difficulty
+const usedWords = {
+  easy: new Set(),
+  medium: new Set(),
+  hard: new Set()
+};
+
+function getBank(level) {
+  switch (level) {
+    case "easy":
+      return EASY_WORDS;
+    case "hard":
+      return HARD_WORDS;
+    default:
+      return MEDIUM_WORDS;
   }
+}
+
+function getRandomWords(level = "medium", count = 3) {
+  const bank = getBank(level);
+  const used = usedWords[level];
+
+  const available = bank.filter((w) => !used.has(w));
+
+  if (available.length < count) {
+    used.clear();
+    return shuffle([...bank]).slice(0, count);
+  }
+
   const selected = shuffle(available).slice(0, count);
-  selected.forEach((w) => usedWords.add(w));
+  selected.forEach((w) => used.add(w));
+
   return selected;
 }
 
@@ -49,15 +87,18 @@ function buildHintMask(word) {
 }
 
 function revealHintChar(word, currentHint) {
-  // currentHint is like "_ _ _ _ _" — space-joined chars
   const hintChars = currentHint.split(' ');
   const hidden = [];
+
   word.split('').forEach((c, i) => {
     if (c !== ' ' && hintChars[i] === '_') hidden.push(i);
   });
+
   if (hidden.length === 0) return currentHint;
+
   const idx = hidden[Math.floor(Math.random() * hidden.length)];
   hintChars[idx] = word[idx];
+
   return hintChars.join(' ');
 }
 
@@ -70,4 +111,9 @@ function shuffle(arr) {
   return a;
 }
 
-module.exports = { getRandomWords, buildHintMask, revealHintChar, shuffle };
+module.exports = {
+  getRandomWords,
+  buildHintMask,
+  revealHintChar,
+  shuffle
+};
