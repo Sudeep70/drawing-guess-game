@@ -25,19 +25,19 @@ export default function GamePage() {
 
   return (
     <div className={styles.page}>
+
       <WordPicker />
 
-      {/* Top HUD bar */}
-      <div className={styles.hud}>
+      {/* HUD */}
+      <header className={styles.hud}>
         <RoundBadge />
         <WordHint />
         <Timer />
-      </div>
+      </header>
 
-      {/* Main area */}
+      {/* MAIN */}
       <div className={styles.main}>
 
-        {/* Canvas Section */}
         <div className={styles.canvasArea}>
           {isDrawer
             ? <DrawingCanvas key="drawer" />
@@ -45,17 +45,15 @@ export default function GamePage() {
           }
         </div>
 
-        {/* Right panel */}
-        <div className={styles.sidePanel}>
+        <aside className={styles.sidePanel}>
           <Leaderboard />
           <div className={styles.chatWrap}>
             <ChatBox />
           </div>
-        </div>
+        </aside>
 
       </div>
 
-      {/* Round end overlay */}
       {status === 'roundEnd' && roundEndData && (
         <div className={styles.roundEndOverlay}>
           <div className={styles.roundEndCard}>
@@ -82,6 +80,7 @@ export default function GamePage() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
